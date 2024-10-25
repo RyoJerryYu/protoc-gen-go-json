@@ -63,51 +63,68 @@ func (g *Generator) protoJson() string {
 }
 
 func (g *Generator) applyMessageMarshaler(m *protogen.Message) {
-	str := fmt.Sprintf(`
+	heading := fmt.Sprintf(`
 // MarshalJSON implements json.Marshaler
 func (msg *%s) MarshalJSON() ([]byte,error) {
-	return %s {
-		AllowPartial: %t,
-		UseProtoNames: %t,
-		UseEnumNumbers: %t,
-		EmitUnpopulated: %t,
-	}.Marshal(msg)
-}
-`,
+	return %s {`,
 		m.GoIdent.GoName,
 		g.W.QualifiedGoIdent(protogen.GoIdent{
 			GoName:       "MarshalOptions",
 			GoImportPath: "google.golang.org/protobuf/encoding/protojson",
 		}),
-		g.MarshalOptions.AllowPartial,
-		g.MarshalOptions.UseProtoNames,
-		g.MarshalOptions.UseEnumNumbers,
-		g.MarshalOptions.EmitUnpopulated,
 	)
 
-	g.W.P(str)
+	g.W.P(heading)
+
+	fieldPairs := []struct {
+		name  string
+		value bool
+	}{
+		{"AllowPartial", g.MarshalOptions.AllowPartial},
+		{"UseProtoNames", g.MarshalOptions.UseProtoNames},
+		{"UseEnumNumbers", g.MarshalOptions.UseEnumNumbers},
+		{"EmitUnpopulated", g.MarshalOptions.EmitUnpopulated},
+		{"EmitDefaultValues", g.MarshalOptions.EmitDefaultValues},
+	}
+	for _, pair := range fieldPairs {
+		if pair.value {
+			g.W.P(pair.name, ": true,")
+		}
+	}
+
+	g.W.P("}.Marshal(msg)")
+	g.W.P("}")
 }
 
 func (g *Generator) applyMessageUnmarshaler(m *protogen.Message) {
-	str := fmt.Sprintf(`
+	heading := fmt.Sprintf(`
 // UnmarshalJSON implements json.Unmarshaler
 func (msg *%s) UnmarshalJSON(b []byte) error {
-	return %s {
-		AllowPartial: %t,
-		DiscardUnknown: %t,
-	}.Unmarshal(b, msg)
-}
-`,
+	return %s {`,
 		m.GoIdent.GoName,
 		g.W.QualifiedGoIdent(protogen.GoIdent{
 			GoName:       "UnmarshalOptions",
 			GoImportPath: "google.golang.org/protobuf/encoding/protojson",
 		}),
-		g.UnmarshalOptions.AllowPartial,
-		g.UnmarshalOptions.DiscardUnknown,
 	)
 
-	g.W.P(str)
+	g.W.P(heading)
+
+	fieldPairs := []struct {
+		name  string
+		value bool
+	}{
+		{"AllowPartial", g.UnmarshalOptions.AllowPartial},
+		{"DiscardUnknown", g.UnmarshalOptions.DiscardUnknown},
+	}
+	for _, pair := range fieldPairs {
+		if pair.value {
+			g.W.P(pair.name, ": true,")
+		}
+	}
+
+	g.W.P("}.Unmarshal(b, msg)")
+	g.W.P("}")
 }
 
 func (g *Generator) applyEnums(enums []*protogen.Enum) {

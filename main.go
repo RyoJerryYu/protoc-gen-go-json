@@ -47,8 +47,26 @@ func init() {
 	//  ║ []    │ list fields                ║
 	//  ║ {}    │ map fields                 ║
 	//  ╚═══════╧════════════════════════════╝
-	// EmitUnpopulated bool
 	flag.BoolVar(&options.MarshalOptions.EmitUnpopulated, "marshal_emit_unpopulated", false, "specifies whether to emit unpopulated fields. It does not emit unpopulated oneof fields or unpopulated extension fields.")
+
+	// EmitDefaultValues specifies whether to emit default-valued primitive fields,
+	// empty lists, and empty maps. The fields affected are as follows:
+	//  ╔═══════╤════════════════════════════════════════╗
+	//  ║ JSON  │ Protobuf field                         ║
+	//  ╠═══════╪════════════════════════════════════════╣
+	//  ║ false │ non-optional scalar boolean fields     ║
+	//  ║ 0     │ non-optional scalar numeric fields     ║
+	//  ║ ""    │ non-optional scalar string/byte fields ║
+	//  ║ []    │ empty repeated fields                  ║
+	//  ║ {}    │ empty map fields                       ║
+	//  ╚═══════╧════════════════════════════════════════╝
+	//
+	// Behaves similarly to EmitUnpopulated, but does not emit "null"-value fields,
+	// i.e. presence-sensing fields that are omitted will remain omitted to preserve
+	// presence-sensing.
+	// EmitUnpopulated takes precedence over EmitDefaultValues since the former generates
+	// a strict superset of the latter.
+	flag.BoolVar(&options.MarshalOptions.EmitDefaultValues, "marshal_emit_default_values", false, "specifies whether to emit default-valued primitive fields, empty lists, and empty maps")
 
 	// UnmarshalOptions
 
