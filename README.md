@@ -65,18 +65,30 @@ json.Unmarshal(bs, &result)
 
 ### Options
 
-The generator supports options you can specify via the command-line:
+The generator supports options has same meaning as `protojson` supports.
 
-- `enums_as_ints={bool}` - Render enums as integers instead of strings.
-- `emit_defaults={bool}` - Render fields with zero values.
-- `orig_name={bool}` - Use original (.proto file) name for fields.
-- `allow_unknown={bool}` - Allow messages to contain unknown fields when unmarshaling
+#### Marshal Options
+
+- `marshal_allow_partial` - allow messages that have missing required fields to marshal without returning an error. If AllowPartial is false (the default), Marshal will return error if there are any missing required fields.
+- `marshal_use_proto_names` - use proto field name instead of lowerCamelCase name in JSON field names.
+- `marshal_use_enum_numbers` - emits enum values as numbers
+- `marshal_emit_unpopulated` - specifies whether to emit unpopulated fields. It does not emit unpopulated oneof fields or unpopulated extension fields.
+- `marshal_emit_default_values` - specifies whether to emit default-valued primitive fields, empty lists, and empty maps.
+
+#### Unmarshal Options
+
+- `unmarshal_allow_partial` - if AllowPartial is set, input for messages that will result in missing required fields will not return an error.
+- `unmarshal_discard_unknown` - if DiscardUnknown is set, unknown fields are ignored.
+
+#### Standard Options
 
 It also includes the "standard" options available to all [protogen](https://pkg.go.dev/google.golang.org/protobuf/compiler/protogen?tab=doc)-based plugins:
 
 - `import_path={path}` - Override the import path
 - `paths=source_relative` - Derive the output path from the input path
 - etc.
+
+### Using With `protoc`
 
 These can be set as part of the `--go-json_out` value:
 
