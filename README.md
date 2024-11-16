@@ -5,7 +5,7 @@
 > This repository has moved! ✨
 > 
 > Please find the latest version at our new home:  
-> 🏠 [github.com/RyoJerryYu/protoc-gen-pluginx/cmd/protoc-gen-go-json](https://github.com/RyoJerryYu/protoc-gen-pluginx/cmd/protoc-gen-go-json)
+> 🏠 [github.com/RyoJerryYu/protoc-gen-pluginx/tree/master/cmd/protoc-gen-go-json](https://github.com/RyoJerryYu/protoc-gen-pluginx/tree/master/cmd/protoc-gen-go-json)
 >
 > This repository is now archived. Thank you for your interest! 💝
 
